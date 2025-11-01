@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Gerador de QR Code</title>
+  <style>
+    /* Estilos simples para apresentação */
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #f8f8f8;
+      color: #333;
+      padding: 20px;
+      margin: 0;
+      text-align: center;
+    }
+    h1 {
+      margin-top: 0;
+    }
+    #inputContainer {
+      margin-top: 20px;
+    }
+    #urlInput {
+      width: 80%;
+      max-width: 600px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    #generateButton {
+      padding: 10px 20px;
+      margin-left: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+      background-color: #007BFF;
+      color: #fff;
+      cursor: pointer;
+    }
+    #generateButton:hover {
+      background-color: #0056b3;
+    }
+    #qrcode {
+      margin-top: 30px;
+    }
+  </style>
+  <!-- Biblioteca QRCodeStyling para gerar QR Codes com imagem central -->
+  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+</head>
+<body>
+  <h1>Gerador de QR Code de Veículos</h1>
+  <p>Cole o link do veículo no campo abaixo e clique em <strong>Gerar QR Code</strong>. O QR Code será criado automaticamente com a logo no centro.</p>
+  <div id="inputContainer">
+    <input type="text" id="urlInput" placeholder="Cole o link do veículo aqui" />
+    <button id="generateButton" onclick="generateQR()">Gerar QR Code</button>
+  </div>
+  <div id="qrcode"></div>
+
+  <script>
+    /**
+     * Gera um QR Code estilizado com a logo da San Marino no centro.
+     *
+     * Esta função utiliza a biblioteca qr-code-styling, que facilita
+     * a inclusão de imagens no centro do QR Code e permite controle
+     * fino sobre as cores e formas dos pontos e cantos. A imagem da
+     * logo é embutida em formato base64 para que a página funcione
+     * mesmo sem conexão com a internet.
+     */
+    function generateQR() {
+      const url = document.getElementById('urlInput').value.trim();
+      if (!url) {
+        alert('Por favor, insira um link válido.');
+        return;
+      }
+
+      const container = document.getElementById('qrcode');
+      container.innerHTML = '';
+
+      // Base64 da logo (PNG) redimensionada; foi gerada a partir do arquivo fornecido.
+      const logoDataUri =
+        'data:image/png;base64,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';
+
+      // Configuração do QR Code com a biblioteca qr-code-styling
+      const qrCode = new QRCodeStyling({
+        width: 300,
+        height: 300,
+        type: 'canvas',
+        data: url,
+        image: logoDataUri,
+        dotsOptions: {
+          color: '#000000',
+          type: 'rounded'
+        },
+        backgroundOptions: {
+          color: '#ffffff'
+        },
+        imageOptions: {
+          crossOrigin: 'anonymous',
+          margin: 5,
+          imageSize: 0.3
+        }
+      });
+
+      // Renderizar o QR Code no contêiner
+      qrCode.append(container);
+    }
+  </script>
+</body>
+</html>
