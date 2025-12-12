@@ -2,110 +2,169 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>QR Code – San Marino Multimarcas</title>
+  <title>QR Code – Etiquetas Pimaco TR6571</title>
 
   <style>
-    body {
+    :root{
+      --page-w: 8.5in;
+      --page-h: 11in;
+
+      --label-w: 88.9mm;
+      --label-h: 60.1mm;
+
+      --margin-left: 8mm;
+      --margin-top: 12mm;
+      --col-gap: 10mm;
+      --row-gap: 6mm;
+
+      --qr-size: 45mm;
+    }
+
+    body{
       font-family: Arial, Helvetica, sans-serif;
-      background: #f3f4f6;
-      color: #111827;
-      padding: 10px;
-      margin: 0;
-      text-align: center;
+      background:#f3f4f6;
+      margin:0;
+      padding:12px;
+      text-align:center;
+      color:#111827;
     }
 
-    p {
-      max-width: 600px;
-      margin: 0 auto 10px auto;
-      color: #374151;
-      font-size: 14px;
+    p{
+      font-size:14px;
+      margin-bottom:10px;
     }
 
-    #inputContainer {
-      margin-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
+    #inputContainer{
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
     }
 
-    #urlInput {
-      width: 80%;
-      max-width: 600px;
-      padding: 8px;
-      font-size: 14px;
-      border: 1px solid #9ca3af;
-      border-radius: 6px;
+    input{
+      width:min(90vw,600px);
+      padding:8px;
+      border-radius:8px;
+      border:1px solid #9ca3af;
     }
 
-    button {
-      padding: 8px 16px;
-      font-size: 13px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    button{
+      padding:8px 14px;
+      border-radius:8px;
+      border:none;
+      cursor:pointer;
+      box-shadow:0 3px 8px rgba(0,0,0,.15);
     }
 
-    #generateButton {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: #fff;
+    #generateButton{
+      background:linear-gradient(135deg,#10b981,#059669);
+      color:#fff;
     }
 
-    #printButton {
-      background: linear-gradient(135deg, #9ca3af, #6b7280);
-      color: #fff;
+    #printSelectedBtn{
+      background:linear-gradient(135deg,#111827,#374151);
+      color:#fff;
     }
 
-    /* ===== MOCKUP COM IMAGEM REAL DO CELULAR ===== */
-    #phoneWrapper {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
+    .panel{
+      background:#fff;
+      border-radius:14px;
+      padding:14px;
+      max-width:900px;
+      margin:0 auto;
+      box-shadow:0 6px 18px rgba(0,0,0,.08);
+      text-align:left;
     }
 
-    .phone-mockup {
-      position: relative;
-      width: 360px;
+    .previewBox{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      margin-bottom:14px;
     }
 
-    .phone-mockup img {
-      width: 100%;
-      display: block;
+    .previewBox img{
+      width:110px;
+      height:110px;
+      border-radius:12px;
+      border:1px solid #e5e7eb;
     }
 
-    /* Área do QR Code sobre a tela branca */
-    #qrcode {
-      position: absolute;
-      top: 215px;      /* ajuste fino vertical */
-      left: 50%;
-      transform: translateX(-50%);
-      width: 220px;
-      height: 220px;
-      background: #ffffff;
-      border-radius: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 12px 22px rgba(0,0,0,0.2);
+    #slotGrid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin-top:12px;
     }
 
-    @media print {
-      body {
-        background: #ffffff;
-        padding: 0;
-        margin: 0;
-      }
+    .slotBtn{
+      background:#fff;
+      border:2px solid #e5e7eb;
+      border-radius:14px;
+      padding:14px;
+      text-align:center;
+      cursor:pointer;
+    }
 
-      #inputContainer,
-      p {
-        display: none;
-      }
+    .slotBtn.active{
+      border-color:#2563eb;
+      box-shadow:0 10px 18px rgba(37,99,235,.2);
+    }
 
-      #phoneWrapper {
-        height: 100vh;
-        align-items: center;
-      }
+    .slotBtn strong{
+      font-size:18px;
+      display:block;
+    }
+
+    /* ===== LOGO RODAPÉ ===== */
+    .brandFooter{
+      margin-top:26px;
+      text-align:center;
+    }
+
+    .brandFooter img{
+      max-width:280px;
+      width:80%;
+      opacity:0.95;
+    }
+
+    /* ===== ÁREA DE IMPRESSÃO ===== */
+    #labelSheet{
+      display:none;
+      width:var(--page-w);
+      height:var(--page-h);
+      padding-left:var(--margin-left);
+      padding-top:var(--margin-top);
+    }
+
+    #labelGrid{
+      display:grid;
+      grid-template-columns:var(--label-w) var(--label-w);
+      grid-auto-rows:var(--label-h);
+      column-gap:var(--col-gap);
+      row-gap:var(--row-gap);
+    }
+
+    .labelCell{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .labelCell img{
+      width:var(--qr-size);
+      height:var(--qr-size);
+    }
+
+    @page{
+      size:Letter;
+      margin:0;
+    }
+
+    @media print{
+      body>*{display:none!important;}
+      #labelSheet{display:block!important;}
     }
   </style>
 
@@ -114,55 +173,115 @@
 
 <body>
 
-  <p>
-    Cole o link do veículo e gere o QR Code.<br>
-    <strong>San Marino Multimarcas</strong>
-  </p>
+<p>
+  Cole o link, gere o QR Code e escolha a posição da etiqueta.<br>
+  <strong>Pimaco TR6571 – Letter (8 posições)</strong>
+</p>
 
-  <div id="inputContainer">
-    <input type="text" id="urlInput" placeholder="Cole o link do veículo aqui">
-    <button id="generateButton" onclick="generateQR()">Gerar QR Code</button>
-    <button id="printButton" onclick="window.print()">Imprimir</button>
-  </div>
+<div id="inputContainer">
+  <input id="urlInput" placeholder="Cole o link do veículo aqui">
+  <button id="generateButton" onclick="generateQR()">Gerar QR Code</button>
+</div>
 
-  <div id="phoneWrapper">
-    <div class="phone-mockup">
-      <!-- IMAGEM DO CELULAR -->
-      <img src="Celular.jpeg" alt="Celular San Marino">
+<div class="panel">
 
-      <!-- QR CODE -->
-      <div id="qrcode"></div>
+  <div class="previewBox">
+    <img id="qrPreview" style="display:none">
+    <div>
+      <strong>Pré-visualização</strong><br>
+      QR Code gerado aparecerá aqui
     </div>
   </div>
 
-  <script>
-    function generateQR() {
-      const url = document.getElementById('urlInput').value.trim();
-      if (!url) {
-        alert('Por favor, insira um link válido.');
-        return;
-      }
+  <div id="slotGrid">
+    <div class="slotBtn" onclick="selectSlot(1)">1<br>Topo esquerda</div>
+    <div class="slotBtn" onclick="selectSlot(2)">2<br>Topo direita</div>
+    <div class="slotBtn" onclick="selectSlot(3)">3<br>2ª linha esquerda</div>
+    <div class="slotBtn" onclick="selectSlot(4)">4<br>2ª linha direita</div>
+    <div class="slotBtn" onclick="selectSlot(5)">5<br>3ª linha esquerda</div>
+    <div class="slotBtn" onclick="selectSlot(6)">6<br>3ª linha direita</div>
+    <div class="slotBtn" onclick="selectSlot(7)">7<br>Base esquerda</div>
+    <div class="slotBtn" onclick="selectSlot(8)">8<br>Base direita</div>
+  </div>
 
-      const container = document.getElementById('qrcode');
-      container.innerHTML = '';
+  <div style="margin-top:14px">
+    <button id="printSelectedBtn" onclick="printSelected()">Imprimir na posição selecionada</button>
+  </div>
 
-      const qrCode = new QRCodeStyling({
-        width: 200,
-        height: 200,
-        type: 'canvas',
-        data: url,
-        dotsOptions: {
-          color: '#000000',
-          type: 'rounded'
-        },
-        backgroundOptions: {
-          color: '#ffffff'
-        }
-      });
+</div>
 
-      qrCode.append(container);
-    }
-  </script>
+<!-- LOGO MULTIMARCAS -->
+<div class="brandFooter">
+  <img src="SM_MULTIMARCAS_preto.png" alt="San Marino Multimarcas">
+</div>
+
+<div id="qrHidden" style="display:none"></div>
+
+<div id="labelSheet">
+  <div id="labelGrid">
+    <div class="labelCell" data-cell="1"><img></div>
+    <div class="labelCell" data-cell="2"><img></div>
+    <div class="labelCell" data-cell="3"><img></div>
+    <div class="labelCell" data-cell="4"><img></div>
+    <div class="labelCell" data-cell="5"><img></div>
+    <div class="labelCell" data-cell="6"><img></div>
+    <div class="labelCell" data-cell="7"><img></div>
+    <div class="labelCell" data-cell="8"><img></div>
+  </div>
+</div>
+
+<script>
+let qrData = "";
+let selectedSlot = 1;
+
+function selectSlot(n){
+  selectedSlot = n;
+  document.querySelectorAll('.slotBtn').forEach((b,i)=>{
+    b.classList.toggle('active', i+1===n);
+  });
+  if(qrData) placeQR();
+}
+
+async function generateQR(){
+  const url = urlInput.value.trim();
+  if(!url) return alert("Informe um link");
+
+  const qr = new QRCodeStyling({
+    width:300,
+    height:300,
+    data:url,
+    dotsOptions:{color:"#000"},
+    backgroundOptions:{color:"#fff"}
+  });
+
+  qrHidden.innerHTML="";
+  qr.append(qrHidden);
+
+  const blob = await qr.getRawData("png");
+  qrData = await new Promise(r=>{
+    const fr=new FileReader();
+    fr.onload=()=>r(fr.result);
+    fr.readAsDataURL(blob);
+  });
+
+  qrPreview.src = qrData;
+  qrPreview.style.display="block";
+  placeQR();
+}
+
+function placeQR(){
+  document.querySelectorAll('.labelCell img').forEach(i=>i.src="");
+  document.querySelector(`.labelCell[data-cell="${selectedSlot}"] img`).src=qrData;
+}
+
+function printSelected(){
+  if(!qrData) return alert("Gere o QR primeiro");
+  placeQR();
+  window.print();
+}
+
+selectSlot(1);
+</script>
 
 </body>
 </html>
