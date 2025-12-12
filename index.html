@@ -105,6 +105,7 @@
       padding:14px;
       text-align:center;
       cursor:pointer;
+      user-select:none;
     }
 
     .slotBtn.active{
@@ -122,7 +123,6 @@
       margin-top:26px;
       text-align:center;
     }
-
     .brandFooter img{
       max-width:280px;
       width:80%;
@@ -155,6 +155,14 @@
     .labelCell img{
       width:var(--qr-size);
       height:var(--qr-size);
+      display:block;
+    }
+
+    /* ✅ IMPORTANTÍSSIMO:
+       Esconde qualquer imagem sem src (evita o ícone de imagem quebrada no print preview) */
+    .labelCell img:not([src]),
+    .labelCell img[src=""]{
+      display:none !important;
     }
 
     @page{
@@ -186,7 +194,7 @@
 <div class="panel">
 
   <div class="previewBox">
-    <img id="qrPreview" style="display:none">
+    <img id="qrPreview" style="display:none" alt="Prévia do QR">
     <div>
       <strong>Pré-visualização</strong><br>
       QR Code gerado aparecerá aqui
@@ -194,14 +202,14 @@
   </div>
 
   <div id="slotGrid">
-    <div class="slotBtn" onclick="selectSlot(1)">1<br>Topo esquerda</div>
-    <div class="slotBtn" onclick="selectSlot(2)">2<br>Topo direita</div>
-    <div class="slotBtn" onclick="selectSlot(3)">3<br>2ª linha esquerda</div>
-    <div class="slotBtn" onclick="selectSlot(4)">4<br>2ª linha direita</div>
-    <div class="slotBtn" onclick="selectSlot(5)">5<br>3ª linha esquerda</div>
-    <div class="slotBtn" onclick="selectSlot(6)">6<br>3ª linha direita</div>
-    <div class="slotBtn" onclick="selectSlot(7)">7<br>Base esquerda</div>
-    <div class="slotBtn" onclick="selectSlot(8)">8<br>Base direita</div>
+    <div class="slotBtn" onclick="selectSlot(1)"><strong>1</strong>Topo esquerda</div>
+    <div class="slotBtn" onclick="selectSlot(2)"><strong>2</strong>Topo direita</div>
+    <div class="slotBtn" onclick="selectSlot(3)"><strong>3</strong>2ª linha esquerda</div>
+    <div class="slotBtn" onclick="selectSlot(4)"><strong>4</strong>2ª linha direita</div>
+    <div class="slotBtn" onclick="selectSlot(5)"><strong>5</strong>3ª linha esquerda</div>
+    <div class="slotBtn" onclick="selectSlot(6)"><strong>6</strong>3ª linha direita</div>
+    <div class="slotBtn" onclick="selectSlot(7)"><strong>7</strong>Base esquerda</div>
+    <div class="slotBtn" onclick="selectSlot(8)"><strong>8</strong>Base direita</div>
   </div>
 
   <div style="margin-top:14px">
@@ -210,77 +218,90 @@
 
 </div>
 
-<!-- LOGO MULTIMARCAS -->
+<!-- LOGO MULTIMARCAS (tela apenas) -->
 <div class="brandFooter">
   <img src="SM_MULTIMARCAS_preto.png" alt="San Marino Multimarcas">
 </div>
 
 <div id="qrHidden" style="display:none"></div>
 
+<!-- Folha de impressão -->
 <div id="labelSheet">
   <div id="labelGrid">
-    <div class="labelCell" data-cell="1"><img></div>
-    <div class="labelCell" data-cell="2"><img></div>
-    <div class="labelCell" data-cell="3"><img></div>
-    <div class="labelCell" data-cell="4"><img></div>
-    <div class="labelCell" data-cell="5"><img></div>
-    <div class="labelCell" data-cell="6"><img></div>
-    <div class="labelCell" data-cell="7"><img></div>
-    <div class="labelCell" data-cell="8"><img></div>
+    <div class="labelCell" data-cell="1"><img alt=""></div>
+    <div class="labelCell" data-cell="2"><img alt=""></div>
+    <div class="labelCell" data-cell="3"><img alt=""></div>
+    <div class="labelCell" data-cell="4"><img alt=""></div>
+    <div class="labelCell" data-cell="5"><img alt=""></div>
+    <div class="labelCell" data-cell="6"><img alt=""></div>
+    <div class="labelCell" data-cell="7"><img alt=""></div>
+    <div class="labelCell" data-cell="8"><img alt=""></div>
   </div>
 </div>
 
 <script>
-let qrData = "";
-let selectedSlot = 1;
+  let qrData = "";
+  let selectedSlot = 1;
 
-function selectSlot(n){
-  selectedSlot = n;
-  document.querySelectorAll('.slotBtn').forEach((b,i)=>{
-    b.classList.toggle('active', i+1===n);
-  });
-  if(qrData) placeQR();
-}
+  function selectSlot(n){
+    selectedSlot = n;
+    document.querySelectorAll('.slotBtn').forEach((b,i)=>{
+      b.classList.toggle('active', i+1 === n);
+    });
+    if(qrData) placeQR();
+  }
 
-async function generateQR(){
-  const url = urlInput.value.trim();
-  if(!url) return alert("Informe um link");
+  async function generateQR(){
+    const url = urlInput.value.trim();
+    if(!url) return alert("Informe um link");
 
-  const qr = new QRCodeStyling({
-    width:300,
-    height:300,
-    data:url,
-    dotsOptions:{color:"#000"},
-    backgroundOptions:{color:"#fff"}
-  });
+    const qr = new QRCodeStyling({
+      width: 300,
+      height: 300,
+      data: url,
+      dotsOptions: { color:"#000" },
+      backgroundOptions: { color:"#fff" }
+    });
 
-  qrHidden.innerHTML="";
-  qr.append(qrHidden);
+    qrHidden.innerHTML = "";
+    qr.append(qrHidden);
 
-  const blob = await qr.getRawData("png");
-  qrData = await new Promise(r=>{
-    const fr=new FileReader();
-    fr.onload=()=>r(fr.result);
-    fr.readAsDataURL(blob);
-  });
+    const blob = await qr.getRawData("png");
+    qrData = await new Promise(resolve => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(fr.result);
+      fr.readAsDataURL(blob);
+    });
 
-  qrPreview.src = qrData;
-  qrPreview.style.display="block";
-  placeQR();
-}
+    qrPreview.src = qrData;
+    qrPreview.style.display = "block";
 
-function placeQR(){
-  document.querySelectorAll('.labelCell img').forEach(i=>i.src="");
-  document.querySelector(`.labelCell[data-cell="${selectedSlot}"] img`).src=qrData;
-}
+    placeQR();
+  }
 
-function printSelected(){
-  if(!qrData) return alert("Gere o QR primeiro");
-  placeQR();
-  window.print();
-}
+  function clearAllLabelImgs(){
+    // ✅ Em vez de img.src = "" (que gera ícone quebrado),
+    // removemos o atributo src de todos.
+    document.querySelectorAll('.labelCell img').forEach(img => {
+      img.removeAttribute('src');
+    });
+  }
 
-selectSlot(1);
+  function placeQR(){
+    clearAllLabelImgs();
+    const target = document.querySelector(`.labelCell[data-cell="${selectedSlot}"] img`);
+    if(target){
+      target.setAttribute('src', qrData);
+    }
+  }
+
+  function printSelected(){
+    if(!qrData) return alert("Gere o QR primeiro");
+    placeQR();
+    window.print();
+  }
+
+  selectSlot(1);
 </script>
 
 </body>
